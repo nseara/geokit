@@ -5,11 +5,17 @@ import Resend from "next-auth/providers/resend";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { createServiceClient } from "@/lib/supabase/server";
 
+// Provide fallbacks for build time when env vars aren't available
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: SupabaseAdapter({
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  }),
+  adapter: supabaseUrl && supabaseServiceKey 
+    ? SupabaseAdapter({
+        url: supabaseUrl,
+        secret: supabaseServiceKey,
+      })
+    : undefined,
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
