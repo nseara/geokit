@@ -56,13 +56,30 @@ export default function Home() {
           </Link>
           <nav className="flex items-center gap-4">
             <Link
+              href="/leaderboard"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+            >
+              Leaderboard
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+            >
+              Pricing
+            </Link>
+            <Link
               href="https://github.com/geokit/geokit"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <Github className="h-4 w-4" />
-              <span className="hidden sm:inline">Star on GitHub</span>
+            </Link>
+            <Link
+              href="/signin"
+              className="inline-flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              Sign in
             </Link>
           </nav>
         </div>
@@ -159,7 +176,7 @@ export default function Home() {
                 View on GitHub
               </Link>
               <Link
-                href="#"
+                href="/signin"
                 className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
               >
                 Get Started
