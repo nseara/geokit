@@ -10,7 +10,7 @@ GRANT ALL ON SCHEMA next_auth TO postgres;
 -- Create users table in next_auth schema
 CREATE TABLE IF NOT EXISTS next_auth.users
 (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
     name text,
     email text,
     "emailVerified" timestamp with time zone,
@@ -36,7 +36,7 @@ $$;
 -- Create sessions table
 CREATE TABLE IF NOT EXISTS next_auth.sessions
 (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
     expires timestamp with time zone NOT NULL,
     "sessionToken" text NOT NULL,
     "userId" uuid,
@@ -54,7 +54,7 @@ GRANT ALL ON TABLE next_auth.sessions TO service_role;
 -- Create accounts table
 CREATE TABLE IF NOT EXISTS next_auth.accounts
 (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
     type text NOT NULL,
     provider text NOT NULL,
     "providerAccountId" text NOT NULL,

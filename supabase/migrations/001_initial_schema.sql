@@ -1,12 +1,9 @@
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Create tier enum
 CREATE TYPE tier AS ENUM ('free', 'pro', 'team', 'enterprise');
 
 -- Users table
 CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT UNIQUE NOT NULL,
   name TEXT,
   avatar_url TEXT,
@@ -21,7 +18,7 @@ CREATE TABLE users (
 
 -- Scans table
 CREATE TABLE scans (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   url TEXT NOT NULL,
   title TEXT NOT NULL,
@@ -43,7 +40,7 @@ CREATE TABLE scans (
 
 -- Sites table (for claimed domains)
 CREATE TABLE sites (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
   domain TEXT NOT NULL,
   name TEXT,
@@ -55,7 +52,7 @@ CREATE TABLE sites (
 
 -- Leaderboard entries
 CREATE TABLE leaderboard_entries (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   scan_id UUID REFERENCES scans(id) ON DELETE CASCADE NOT NULL,
   domain TEXT NOT NULL,
   url TEXT NOT NULL,
