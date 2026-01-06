@@ -2,9 +2,14 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
+import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter: SupabaseAdapter({
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  }),
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
@@ -15,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
     Resend({
-      from: "GeoKit <noreply@geokit.dev>",
+      from: "GeoKit <onboarding@resend.dev>",
     }),
   ],
   pages: {
