@@ -9,12 +9,15 @@ import {
   FileText,
   Globe,
   Zap,
+  Bot,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UrlInput } from "@/components/scanner/url-input";
 import { RecentScans } from "@/components/dashboard/recent-scans";
+import { AnalyticsPreview } from "@/components/dashboard/analytics-preview";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -137,25 +140,51 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Recent scans */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Recent Scans</CardTitle>
-            <CardDescription>Your latest AI visibility scans</CardDescription>
-          </div>
-          <Link href="/history">
-            <Button variant="outline" size="sm">
-              View all
-            </Button>
-          </Link>
-        </CardHeader>
-        <CardContent>
-          <Suspense fallback={<div className="h-48 flex items-center justify-center text-muted-foreground">Loading...</div>}>
-            <RecentScans userId={session?.user?.id} />
-          </Suspense>
-        </CardContent>
-      </Card>
+      {/* Analytics preview and Recent scans */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Analytics Preview */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                AI Traffic
+              </CardTitle>
+              <CardDescription>Traffic from LLM providers (last 7 days)</CardDescription>
+            </div>
+            <Link href="/analytics">
+              <Button variant="outline" size="sm">
+                View analytics
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            <Suspense fallback={<div className="h-48 flex items-center justify-center text-muted-foreground">Loading...</div>}>
+              <AnalyticsPreview />
+            </Suspense>
+          </CardContent>
+        </Card>
+
+        {/* Recent scans */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Recent Scans</CardTitle>
+              <CardDescription>Your latest AI visibility scans</CardDescription>
+            </div>
+            <Link href="/history">
+              <Button variant="outline" size="sm">
+                View all
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            <Suspense fallback={<div className="h-48 flex items-center justify-center text-muted-foreground">Loading...</div>}>
+              <RecentScans userId={session?.user?.id} />
+            </Suspense>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

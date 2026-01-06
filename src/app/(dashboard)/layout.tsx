@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   Crown,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ export default async function DashboardLayout({
 
   const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { href: "/analytics", icon: BarChart3, label: "Analytics" },
     { href: "/history", icon: History, label: "Scan History" },
     { href: "/sites", icon: Globe, label: "Sites" },
   ];
