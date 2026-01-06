@@ -53,22 +53,19 @@ export async function GET() {
         },
       }
     );
-    
-    results.nextAuthUsersTable = {
-      status: usersResponse.status,
-      ok: usersResponse.ok,
-    };
 
     if (!usersResponse.ok) {
       const errorText = await usersResponse.text();
       results.nextAuthUsersTable = {
-        ...results.nextAuthUsersTable,
+        status: usersResponse.status,
+        ok: false,
         error: errorText,
       };
     } else {
       const data = await usersResponse.json();
       results.nextAuthUsersTable = {
-        ...results.nextAuthUsersTable,
+        status: usersResponse.status,
+        ok: true,
         rowCount: Array.isArray(data) ? data.length : "unknown",
       };
     }
@@ -107,9 +104,8 @@ export async function GET() {
     };
   }
 
-  // Test 4: Try to list schemas via SQL (if possible)
+  // Test 4: Try to query the accounts table too
   try {
-    // Try to query the accounts table too
     const accountsResponse = await fetch(
       `${supabaseUrl}/rest/v1/accounts?select=id&limit=1`,
       {
@@ -121,17 +117,18 @@ export async function GET() {
         },
       }
     );
-    
-    results.nextAuthAccountsTable = {
-      status: accountsResponse.status,
-      ok: accountsResponse.ok,
-    };
 
     if (!accountsResponse.ok) {
       const errorText = await accountsResponse.text();
       results.nextAuthAccountsTable = {
-        ...results.nextAuthAccountsTable,
+        status: accountsResponse.status,
+        ok: false,
         error: errorText,
+      };
+    } else {
+      results.nextAuthAccountsTable = {
+        status: accountsResponse.status,
+        ok: true,
       };
     }
   } catch (error) {
