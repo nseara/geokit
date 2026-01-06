@@ -11,7 +11,17 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 // Check if Supabase adapter can be configured
+// IMPORTANT: Both values must be present AND not empty strings
 const canUseAdapter = Boolean(supabaseUrl && supabaseServiceKey);
+
+// Log configuration status for debugging
+if (process.env.NODE_ENV !== "production") {
+  console.log("[Auth] Configuration status:", {
+    supabaseUrlConfigured: Boolean(supabaseUrl),
+    supabaseServiceKeyConfigured: Boolean(supabaseServiceKey),
+    adapterEnabled: canUseAdapter,
+  });
+}
 
 // Build providers array dynamically based on available env vars
 const providers: Provider[] = [];
@@ -45,8 +55,15 @@ if (process.env.AUTH_RESEND_KEY && canUseAdapter) {
   );
 }
 
-// Configure adapter for email/magic link support
-// Requires NextAuth tables in Supabase (see migrations/003_nextauth_adapter.sql)
+/**
+ * Configure adapter for email/magic link support and account linking.
+ * Requires NextAuth tables in Supabase (see migrations/003_nextauth_adapter.sql)
+ * 
+ * If the adapter is not configured (missing env vars), authentication will still
+ * work with OAuth providers using JWT strategy, but:
+ * - Email/magic link auth will not work
+ * - Account linking across providers won't be persisted
+ */
 const adapter = canUseAdapter
   ? SupabaseAdapter({
       url: supabaseUrl,
