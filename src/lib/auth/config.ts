@@ -2,8 +2,16 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
+import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { createServiceClient, isSupabaseServiceConfigured } from "@/lib/supabase/server";
 import type { Provider } from "next-auth/providers";
+
+// Supabase configuration
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+// Check if Supabase adapter can be configured
+const canUseAdapter = Boolean(supabaseUrl && supabaseServiceKey);
 
 // Build providers array dynamically based on available env vars
 const providers: Provider[] = [];
@@ -28,18 +36,26 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
   );
 }
 
-// Only add Resend if API key is configured
-if (process.env.AUTH_RESEND_KEY) {
+// Only add Resend if API key is configured AND we have an adapter (email requires adapter)
+if (process.env.AUTH_RESEND_KEY && canUseAdapter) {
   providers.push(
     Resend({
-      from: "GeoKit <onboarding@resend.dev>",
+      from: process.env.AUTH_RESEND_FROM || "GeoKit <noreply@geokit.dev>",
     })
   );
 }
 
-// Note: We use JWT sessions and handle user sync to Supabase manually in callbacks
-// No adapter needed - this avoids dependency on Supabase's NextAuth schema
+// Configure adapter for email/magic link support
+// Requires NextAuth tables in Supabase (see migrations/003_nextauth_adapter.sql)
+const adapter = canUseAdapter
+  ? SupabaseAdapter({
+      url: supabaseUrl,
+      secret: supabaseServiceKey,
+    })
+  : undefined;
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter,
   providers,
   pages: {
     signIn: "/signin",
