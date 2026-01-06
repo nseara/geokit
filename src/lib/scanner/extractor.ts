@@ -1,4 +1,4 @@
-import { JSDOM } from "jsdom";
+import { parseHTML } from "linkedom";
 import { Readability } from "@mozilla/readability";
 import * as cheerio from "cheerio";
 import type { ExtractedContent, PageMetadata } from "./types";
@@ -27,9 +27,11 @@ export function extractContent(html: string, url: string): ExtractionResult {
     $('meta[property="og:description"]').attr("content") ||
     null;
 
-  // Use Readability for main content extraction
-  const dom = new JSDOM(html, { url });
-  const reader = new Readability(dom.window.document, {
+  // Use Readability for main content extraction with linkedom (serverless-compatible)
+  const { document } = parseHTML(html);
+  // Set the document URL for proper link resolution
+  Object.defineProperty(document, "documentURI", { value: url });
+  const reader = new Readability(document as unknown as Document, {
     charThreshold: 100,
   });
   const article = reader.parse();
