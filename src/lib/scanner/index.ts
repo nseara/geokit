@@ -1,4 +1,4 @@
-import { fetchPage, normalizeUrl, FetchError } from "./fetcher";
+import { fetchPage, normalizeUrl } from "./fetcher";
 import { extractContent } from "./extractor";
 import { analyzeReadability } from "../analyzers/readability";
 import { analyzeStructure } from "../analyzers/structure";
@@ -16,7 +16,7 @@ export interface ScanOptions {
 
 export async function scanUrl(
   inputUrl: string,
-  options: ScanOptions = {}
+  _options: ScanOptions = {}
 ): Promise<ScanResult> {
   // Normalize URL
   const url = normalizeUrl(inputUrl);
