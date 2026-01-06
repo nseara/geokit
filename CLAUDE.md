@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Rules
+
+- **Never mention AI in commits or code**: Do not add "Generated with Claude", "Co-Authored-By: Claude", or any AI attribution to commits, comments, or documentation. Keep commits clean and professional.
+
 ## Project Overview
 
 GeoKit is an open-source AI visibility scanner - "SEMrush for the AI era". It analyzes web pages to score how well they're optimized for AI search engines (ChatGPT, Perplexity, Claude, Google AI Overviews).
