@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .select("title, url, overall_score, description")
     .eq("share_id", id)
     .eq("is_public", true)
-    .single();
+    .single() as unknown as { data: { title: string; url: string; overall_score: number; description: string | null } | null };
 
   if (!scan) {
     return {
@@ -72,6 +72,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+interface ScanData {
+  id: string;
+  url: string;
+  title: string;
+  overall_score: number;
+  readability_score: number;
+  structure_score: number;
+  entities_score: number;
+  sources_score: number;
+  word_count: number;
+  has_schema: boolean;
+  author: string | null;
+  insights: unknown;
+  full_result: unknown;
+}
+
 export default async function ReportPage({ params }: Props) {
   const { id } = await params;
   const supabase = createServiceClient();
@@ -81,7 +97,7 @@ export default async function ReportPage({ params }: Props) {
     .select("*")
     .eq("share_id", id)
     .eq("is_public", true)
-    .single();
+    .single() as unknown as { data: ScanData | null };
 
   if (!scan) {
     notFound();
@@ -90,7 +106,7 @@ export default async function ReportPage({ params }: Props) {
   const fullResult = scan.full_result as {
     scores: Record<string, ScoreDetail>;
     insights: Insight[];
-  };
+  } | null;
 
   const scores = fullResult?.scores || {
     readability: { score: scan.readability_score, maxScore: 100, percentage: scan.readability_score, label: "Readability", factors: [] },

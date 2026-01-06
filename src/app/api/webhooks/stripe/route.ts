@@ -36,7 +36,7 @@ export async function POST(req: Request) {
             tier: plan as "pro" | "team",
             stripe_customer_id: session.customer as string,
             stripe_subscription_id: session.subscription as string,
-          })
+          } as never)
           .eq("id", userId);
       }
       break;
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
         await supabase
           .from("users")
-          .update({ tier })
+          .update({ tier } as never)
           .eq("stripe_subscription_id", subscription.id);
       }
       break;
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
         .update({
           tier: "free",
           stripe_subscription_id: null,
-        })
+        } as never)
         .eq("stripe_subscription_id", subscription.id);
       break;
     }

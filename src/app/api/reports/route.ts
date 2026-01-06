@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     .from("scans")
     .select("id, share_id, user_id")
     .eq("id", scanId)
-    .single();
+    .single() as unknown as { data: { id: string; share_id: string | null; user_id: string | null } | null };
 
   if (!scan) {
     return NextResponse.json({ error: "Scan not found" }, { status: 404 });
@@ -38,9 +38,10 @@ export async function POST(req: Request) {
   // Generate new share ID
   const shareId = nanoid(10);
 
-  const { error } = await supabase
+  const serviceClient = createServiceClient();
+  const { error } = await serviceClient
     .from("scans")
-    .update({ is_public: true, share_id: shareId })
+    .update({ is_public: true, share_id: shareId } as never)
     .eq("id", scanId);
 
   if (error) {

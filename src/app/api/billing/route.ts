@@ -15,7 +15,7 @@ export async function POST() {
     .from("users")
     .select("stripe_customer_id")
     .eq("id", session.user.id)
-    .single();
+    .single() as unknown as { data: { stripe_customer_id: string | null } | null };
 
   if (!user?.stripe_customer_id) {
     return NextResponse.json(

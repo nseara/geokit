@@ -41,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name || null,
           avatar_url: user.image || null,
-        });
+        } as never);
       } else if (account?.provider !== "resend") {
         // Update user info from OAuth
         await supabase
@@ -49,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .update({
             name: user.name || undefined,
             avatar_url: user.image || undefined,
-          })
+          } as never)
           .eq("email", user.email);
       }
 
@@ -62,11 +62,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .from("users")
           .select("id, tier, scans_this_month")
           .eq("email", session.user.email)
-          .single();
+          .single() as unknown as { data: { id: string; tier: string; scans_this_month: number } | null };
 
         if (dbUser) {
           session.user.id = dbUser.id;
-          session.user.tier = dbUser.tier;
+          session.user.tier = dbUser.tier as "free" | "pro" | "team" | "enterprise";
           session.user.scansThisMonth = dbUser.scans_this_month;
         }
       }

@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       .select("title, url, overall_score")
       .eq("share_id", id)
       .eq("is_public", true)
-      .single();
+      .single() as unknown as { data: { title: string; url: string; overall_score: number } | null };
 
     if (scan) {
       score = scan.overall_score;
