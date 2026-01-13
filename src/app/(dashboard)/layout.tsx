@@ -6,13 +6,13 @@ import {
   LayoutDashboard,
   History,
   Globe,
-  Settings,
   LogOut,
   Crown,
   BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 
 export default async function DashboardLayout({
   children,
@@ -33,9 +33,12 @@ export default async function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-64 border-r bg-muted/30 flex flex-col">
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Mobile Navigation */}
+      <MobileNav user={session.user} />
+
+      {/* Sidebar - hidden on mobile */}
+      <aside className="hidden md:flex w-64 border-r bg-muted/30 flex-col">
         {/* Logo */}
         <div className="p-4 border-b">
           <Link href="/" className="flex items-center gap-2">
