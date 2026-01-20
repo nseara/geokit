@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { formatDistanceToNow, format } from "date-fns";
+import { format } from "date-fns";
 import { auth } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { ExternalLink, Share2, Filter } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ShareScanButton } from "@/components/dashboard/share-scan-button";
 
 export default async function HistoryPage() {
   const session = await auth();
@@ -151,22 +152,5 @@ function ScoreBreakdown({
         </div>
       ))}
     </div>
-  );
-}
-
-function ShareScanButton({ scanId }: { scanId: string }) {
-  return (
-    <form
-      action={async () => {
-        "use server";
-        // This would call the reports API to create a share link
-        // For now, we'll just redirect
-      }}
-    >
-      <Button variant="outline" size="sm" className="gap-2">
-        <Share2 className="h-4 w-4" />
-        Share
-      </Button>
-    </form>
   );
 }

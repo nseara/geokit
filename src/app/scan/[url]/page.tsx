@@ -19,6 +19,7 @@ import {
   Lightbulb,
   Share2,
   Github,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,6 +60,7 @@ export default function ScanResultPage() {
   const encodedUrl = params.url as string;
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -74,6 +76,9 @@ export default function ScanResultPage() {
         const data = await response.json();
 
         if (!response.ok) {
+          if (data.limitReached) {
+            setLimitReached(true);
+          }
           throw new Error(data.error || "Failed to scan URL");
         }
 
@@ -95,7 +100,7 @@ export default function ScanResultPage() {
   }
 
   if (error) {
-    return <ErrorState error={error} url={decodeURIComponent(encodedUrl)} />;
+    return <ErrorState error={error} url={decodeURIComponent(encodedUrl)} limitReached={limitReached} />;
   }
 
   if (!result) {
@@ -270,7 +275,39 @@ function LoadingState() {
   );
 }
 
-function ErrorState({ error, url }: { error: string; url: string }) {
+function ErrorState({ error, url, limitReached = false }: { error: string; url: string; limitReached?: boolean }) {
+  if (limitReached) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4 border-orange-500/50">
+          <CardContent className="p-8 text-center space-y-4">
+            <div className="h-16 w-16 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mx-auto">
+              <Crown className="h-8 w-8 text-orange-600" />
+            </div>
+            <h2 className="text-xl font-semibold">Scan Limit Reached</h2>
+            <p className="text-muted-foreground">
+              You&apos;ve used all your scans for this month. Upgrade to Pro for unlimited scans and unlock more features.
+            </p>
+            <div className="flex flex-col gap-2 pt-2">
+              <Link href="/pricing">
+                <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                  <Crown className="h-4 w-4 mr-2" />
+                  Upgrade to Pro
+                </Button>
+              </Link>
+              <Link href="/dashboard">
+                <Button variant="outline" className="w-full">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Dashboard
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Card className="max-w-md w-full mx-4">

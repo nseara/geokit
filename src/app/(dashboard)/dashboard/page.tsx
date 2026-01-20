@@ -5,11 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { TIER_LIMITS } from "@/lib/supabase/types";
 import {
   ArrowRight,
-  TrendingUp,
-  FileText,
-  Globe,
   Zap,
-  Bot,
   BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { UrlInput } from "@/components/scanner/url-input";
 import { RecentScans } from "@/components/dashboard/recent-scans";
 import { AnalyticsPreview } from "@/components/dashboard/analytics-preview";
+import { ScanLimitBanner } from "@/components/dashboard/upgrade-prompt";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -54,6 +51,13 @@ export default async function DashboardPage() {
           Welcome back, {session?.user?.name || "there"}! Scan URLs and track your AI visibility.
         </p>
       </div>
+
+      {/* Scan limit warning */}
+      <ScanLimitBanner
+        scansUsed={scansUsed}
+        scansLimit={limits.scansPerMonth}
+        className="mb-6"
+      />
 
       {/* Quick scan */}
       <Card className="mb-8 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
